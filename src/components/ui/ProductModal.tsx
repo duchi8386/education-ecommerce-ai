@@ -1,7 +1,19 @@
-import React from 'react';
-import { X, Star, Users, Clock, Heart, Share2, BookOpen, Award, Calendar } from 'lucide-react';
-import { Product } from '../../types';
-import { useAppContext } from '../../context/AppContext';
+"use client";
+
+import React from "react";
+import {
+  X,
+  Star,
+  Users,
+  Clock,
+  Heart,
+  Share2,
+  BookOpen,
+  Award,
+  Calendar,
+} from "lucide-react";
+import { Product } from "../../types";
+import { useAppContext } from "../../context/AppContext";
 
 interface ProductModalProps {
   product: Product | null;
@@ -9,7 +21,11 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose }) => {
+const ProductModal: React.FC<ProductModalProps> = ({
+  product,
+  isOpen,
+  onClose,
+}) => {
   const { state, dispatch } = useAppContext();
 
   if (!isOpen || !product) return null;
@@ -18,29 +34,29 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   const handleToggleFavorite = () => {
     if (isFavorite) {
-      dispatch({ type: 'REMOVE_FROM_FAVORITES', payload: product.id });
+      dispatch({ type: "REMOVE_FROM_FAVORITES", payload: product.id });
     } else {
-      dispatch({ type: 'ADD_TO_FAVORITES', payload: product.id });
+      dispatch({ type: "ADD_TO_FAVORITES", payload: product.id });
     }
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Beginner':
-        return 'bg-green-100 text-green-800';
-      case 'Intermediate':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Advanced':
-        return 'bg-red-100 text-red-800';
+      case "Beginner":
+        return "bg-green-100 text-green-800";
+      case "Intermediate":
+        return "bg-yellow-100 text-yellow-800";
+      case "Advanced":
+        return "bg-red-100 text-red-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -62,7 +78,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
           </button>
           {product.originalPrice && (
             <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-md font-semibold">
-              -{Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+              -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+              OFF
             </div>
           )}
         </div>
@@ -76,7 +93,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                 <span className="text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
                   {product.category}
                 </span>
-                <span className={`text-sm font-medium px-3 py-1 rounded-full ${getLevelColor(product.level)}`}>
+                <span
+                  className={`text-sm font-medium px-3 py-1 rounded-full ${getLevelColor(
+                    product.level
+                  )}`}
+                >
                   {product.level}
                 </span>
               </div>
@@ -94,8 +115,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{product.instructor}</p>
-                  <p className="text-sm text-gray-600">Chuyên gia {product.category}</p>
+                  <p className="font-medium text-gray-900">
+                    {product.instructor}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Chuyên gia {product.category}
+                  </p>
                 </div>
               </div>
 
@@ -126,7 +151,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
               {/* What you'll learn */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3">Bạn sẽ học được gì</h3>
+                <h3 className="text-lg font-semibold mb-3">
+                  Bạn sẽ học được gì
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {product.tags.map((tag, index) => (
                     <div key={index} className="flex items-center space-x-2">
@@ -146,7 +173,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
                   <Clock className="h-6 w-6 text-primary-600 mx-auto mb-1" />
-                  <p className="text-sm font-medium text-gray-900">{product.duration}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {product.duration}
+                  </p>
                   <p className="text-xs text-gray-600">Video</p>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -179,7 +208,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   </div>
                   {product.originalPrice && (
                     <p className="text-sm text-green-600 font-medium">
-                      Tiết kiệm {formatPrice(product.originalPrice - product.price)}
+                      Tiết kiệm{" "}
+                      {formatPrice(product.originalPrice - product.price)}
                     </p>
                   )}
                 </div>
@@ -199,13 +229,17 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   <button
                     onClick={handleToggleFavorite}
                     className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-lg transition-colors ${
-                      isFavorite 
-                        ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      isFavorite
+                        ? "bg-red-100 text-red-600 hover:bg-red-200"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
-                    <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
-                    <span className="text-sm">{isFavorite ? 'Đã thích' : 'Yêu thích'}</span>
+                    <Heart
+                      className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`}
+                    />
+                    <span className="text-sm">
+                      {isFavorite ? "Đã thích" : "Yêu thích"}
+                    </span>
                   </button>
                   <button className="flex-1 flex items-center justify-center space-x-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors">
                     <Share2 className="h-4 w-4" />
@@ -231,4 +265,4 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
   );
 };
 
-export default ProductModal; 
+export default ProductModal;

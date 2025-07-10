@@ -1,17 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Bot, User, Sparkles } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
-import { mockProducts } from '../../data/mockData';
-import { ChatMessage } from '../../types';
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { Send, X, Bot, User, Sparkles } from "lucide-react";
+import { useAppContext } from "../../context/AppContext";
+import { mockProducts } from "../../data/mockData";
+import { ChatMessage } from "../../types";
 
 const Chatbot: React.FC = () => {
   const { state, dispatch } = useAppContext();
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -24,12 +26,12 @@ const Chatbot: React.FC = () => {
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       message: inputMessage,
-      sender: 'user',
+      sender: "user",
       timestamp: new Date(),
     };
 
-    dispatch({ type: 'ADD_CHAT_MESSAGE', payload: userMessage });
-    setInputMessage('');
+    dispatch({ type: "ADD_CHAT_MESSAGE", payload: userMessage });
+    setInputMessage("");
     setIsTyping(true);
 
     // Simulate AI response delay
@@ -38,61 +40,92 @@ const Chatbot: React.FC = () => {
       const aiMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         message: aiResponse.message,
-        sender: 'ai',
+        sender: "ai",
         timestamp: new Date(),
         products: aiResponse.products,
       };
 
-      dispatch({ type: 'ADD_CHAT_MESSAGE', payload: aiMessage });
+      dispatch({ type: "ADD_CHAT_MESSAGE", payload: aiMessage });
       setIsTyping(false);
     }, 1000 + Math.random() * 2000);
   };
 
-  const generateAIResponse = (userInput: string): { message: string; products?: any[] } => {
+  const generateAIResponse = (
+    userInput: string
+  ): { message: string; products?: any[] } => {
     const input = userInput.toLowerCase();
-    
+
     // Define keywords and their corresponding responses
     const responses = [
       {
-        keywords: ['react', 'frontend', 'javascript', 'web development'],
-        message: 'Tôi hiểu bạn quan tâm đến phát triển web với React! Đây là những khóa học phù hợp nhất mà tôi tìm được:',
-        products: mockProducts.filter(p => 
-          p.tags.some(tag => ['React', 'JavaScript', 'Frontend', 'Web Development'].includes(tag))
-        ).slice(0, 2)
+        keywords: ["react", "frontend", "javascript", "web development"],
+        message:
+          "Tôi hiểu bạn quan tâm đến phát triển web với React! Đây là những khóa học phù hợp nhất mà tôi tìm được:",
+        products: mockProducts
+          .filter((p) =>
+            p.tags.some((tag) =>
+              ["React", "JavaScript", "Frontend", "Web Development"].includes(
+                tag
+              )
+            )
+          )
+          .slice(0, 2),
       },
       {
-        keywords: ['python', 'machine learning', 'ai', 'data science'],
-        message: 'Tuyệt vời! Python và AI đang rất hot hiện nay. Tôi đề xuất những khóa học này để bạn bắt đầu:',
-        products: mockProducts.filter(p => 
-          p.tags.some(tag => ['Python', 'Machine Learning', 'AI', 'Data Science'].includes(tag))
-        ).slice(0, 2)
+        keywords: ["python", "machine learning", "ai", "data science"],
+        message:
+          "Tuyệt vời! Python và AI đang rất hot hiện nay. Tôi đề xuất những khóa học này để bạn bắt đầu:",
+        products: mockProducts
+          .filter((p) =>
+            p.tags.some((tag) =>
+              ["Python", "Machine Learning", "AI", "Data Science"].includes(tag)
+            )
+          )
+          .slice(0, 2),
       },
       {
-        keywords: ['english', 'tiếng anh', 'business', 'communication'],
-        message: 'Tiếng Anh là kỹ năng rất quan trọng! Tôi có một số khóa học chất lượng để giúp bạn:',
-        products: mockProducts.filter(p => 
-          p.tags.some(tag => ['English', 'Business', 'Communication', 'Professional'].includes(tag))
-        ).slice(0, 2)
+        keywords: ["english", "tiếng anh", "business", "communication"],
+        message:
+          "Tiếng Anh là kỹ năng rất quan trọng! Tôi có một số khóa học chất lượng để giúp bạn:",
+        products: mockProducts
+          .filter((p) =>
+            p.tags.some((tag) =>
+              ["English", "Business", "Communication", "Professional"].includes(
+                tag
+              )
+            )
+          )
+          .slice(0, 2),
       },
       {
-        keywords: ['marketing', 'seo', 'digital marketing'],
-        message: 'Marketing online là lĩnh vực đầy tiềm năng! Đây là những khóa học tôi khuyên dùng:',
-        products: mockProducts.filter(p => 
-          p.tags.some(tag => ['Marketing', 'SEO', 'Social Media', 'Analytics'].includes(tag))
-        ).slice(0, 2)
+        keywords: ["marketing", "seo", "digital marketing"],
+        message:
+          "Marketing online là lĩnh vực đầy tiềm năng! Đây là những khóa học tôi khuyên dùng:",
+        products: mockProducts
+          .filter((p) =>
+            p.tags.some((tag) =>
+              ["Marketing", "SEO", "Social Media", "Analytics"].includes(tag)
+            )
+          )
+          .slice(0, 2),
       },
       {
-        keywords: ['design', 'ui', 'ux', 'thiết kế'],
-        message: 'UI/UX Design là ngành rất thú vị! Tôi tìm thấy những khóa học này dành cho bạn:',
-        products: mockProducts.filter(p => 
-          p.tags.some(tag => ['UI', 'UX', 'Design', 'Figma', 'User Experience'].includes(tag))
-        ).slice(0, 2)
-      }
+        keywords: ["design", "ui", "ux", "thiết kế"],
+        message:
+          "UI/UX Design là ngành rất thú vị! Tôi tìm thấy những khóa học này dành cho bạn:",
+        products: mockProducts
+          .filter((p) =>
+            p.tags.some((tag) =>
+              ["UI", "UX", "Design", "Figma", "User Experience"].includes(tag)
+            )
+          )
+          .slice(0, 2),
+      },
     ];
 
     // Find matching response
     for (const response of responses) {
-      if (response.keywords.some(keyword => input.includes(keyword))) {
+      if (response.keywords.some((keyword) => input.includes(keyword))) {
         return response;
       }
     }
@@ -100,33 +133,40 @@ const Chatbot: React.FC = () => {
     // Generic responses
     const genericResponses = [
       {
-        message: 'Chào bạn! Tôi là AI assistant của EduCommerce. Tôi có thể giúp bạn tìm kiếm khóa học phù hợp. Bạn quan tâm đến lĩnh vực nào?',
-        products: mockProducts.slice(0, 3)
+        message:
+          "Chào bạn! Tôi là AI assistant của EduCommerce. Tôi có thể giúp bạn tìm kiếm khóa học phù hợp. Bạn quan tâm đến lĩnh vực nào?",
+        products: mockProducts.slice(0, 3),
       },
       {
-        message: 'Tôi hiểu bạn đang tìm kiếm khóa học. Đây là một số khóa học phổ biến mà tôi đề xuất:',
-        products: mockProducts.sort((a, b) => b.students - a.students).slice(0, 3)
+        message:
+          "Tôi hiểu bạn đang tìm kiếm khóa học. Đây là một số khóa học phổ biến mà tôi đề xuất:",
+        products: mockProducts
+          .sort((a, b) => b.students - a.students)
+          .slice(0, 3),
       },
       {
-        message: 'Dựa trên phân tích, những khóa học này có thể phù hợp với bạn:',
-        products: mockProducts.sort((a, b) => b.rating - a.rating).slice(0, 3)
-      }
+        message:
+          "Dựa trên phân tích, những khóa học này có thể phù hợp với bạn:",
+        products: mockProducts.sort((a, b) => b.rating - a.rating).slice(0, 3),
+      },
     ];
 
-    return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+    return genericResponses[
+      Math.floor(Math.random() * genericResponses.length)
+    ];
   };
 
   const handleProductClick = (product: any) => {
-    dispatch({ type: 'SET_SELECTED_PRODUCT', payload: product });
-    dispatch({ type: 'SET_PRODUCT_MODAL_OPEN', payload: true });
+    dispatch({ type: "SET_SELECTED_PRODUCT", payload: product });
+    dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: true });
   };
 
   const handleClose = () => {
-    dispatch({ type: 'SET_CHAT_OPEN', payload: false });
+    dispatch({ type: "SET_CHAT_OPEN", payload: false });
   };
 
   const handleClearChat = () => {
-    dispatch({ type: 'CLEAR_CHAT_MESSAGES' });
+    dispatch({ type: "CLEAR_CHAT_MESSAGES" });
   };
 
   if (!state.isChatOpen) return null;
@@ -167,30 +207,51 @@ const Chatbot: React.FC = () => {
           <div className="text-center text-gray-500 mt-8">
             <Bot className="h-12 w-12 mx-auto mb-3 text-gray-300" />
             <p className="text-sm">Chào bạn! Tôi có thể giúp gì cho bạn?</p>
-            <p className="text-xs mt-1">Ví dụ: "Tôi muốn học React" hoặc "Khóa học AI nào tốt?"</p>
+            <p className="text-xs mt-1">
+              Ví dụ: "Tôi muốn học React" hoặc "Khóa học AI nào tốt?"
+            </p>
           </div>
         )}
-        
+
         {state.chatMessages.map((message) => (
-          <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`flex items-start space-x-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+          <div
+            key={message.id}
+            className={`flex ${
+              message.sender === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`flex items-start space-x-2 max-w-[80%] ${
+                message.sender === "user"
+                  ? "flex-row-reverse space-x-reverse"
+                  : ""
+              }`}
+            >
               {/* Avatar */}
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                message.sender === 'user' 
-                  ? 'bg-primary-600 text-white' 
-                  : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-              }`}>
-                {message.sender === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.sender === "user"
+                    ? "bg-primary-600 text-white"
+                    : "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                }`}
+              >
+                {message.sender === "user" ? (
+                  <User className="h-4 w-4" />
+                ) : (
+                  <Bot className="h-4 w-4" />
+                )}
               </div>
-              
+
               {/* Message Content */}
-              <div className={`rounded-lg p-3 ${
-                message.sender === 'user'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-900'
-              }`}>
+              <div
+                className={`rounded-lg p-3 ${
+                  message.sender === "user"
+                    ? "bg-primary-600 text-white"
+                    : "bg-gray-100 text-gray-900"
+                }`}
+              >
                 <p className="text-sm">{message.message}</p>
-                
+
                 {/* Products */}
                 {message.products && message.products.length > 0 && (
                   <div className="mt-3 space-y-2">
@@ -210,11 +271,13 @@ const Chatbot: React.FC = () => {
                             <h4 className="text-sm font-medium text-gray-900 truncate">
                               {product.name}
                             </h4>
-                            <p className="text-xs text-gray-600">{product.instructor}</p>
+                            <p className="text-xs text-gray-600">
+                              {product.instructor}
+                            </p>
                             <p className="text-sm font-semibold text-primary-600">
-                              {new Intl.NumberFormat('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND'
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
                               }).format(product.price)}
                             </p>
                           </div>
@@ -227,7 +290,7 @@ const Chatbot: React.FC = () => {
             </div>
           </div>
         ))}
-        
+
         {/* Typing Indicator */}
         {isTyping && (
           <div className="flex justify-start">
@@ -238,14 +301,20 @@ const Chatbot: React.FC = () => {
               <div className="bg-gray-100 rounded-lg p-3">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.1s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
                 </div>
               </div>
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -256,7 +325,7 @@ const Chatbot: React.FC = () => {
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
             placeholder="Nhập tin nhắn..."
             className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             disabled={isTyping}
@@ -274,4 +343,4 @@ const Chatbot: React.FC = () => {
   );
 };
 
-export default Chatbot; 
+export default Chatbot;

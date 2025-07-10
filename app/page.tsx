@@ -1,15 +1,17 @@
+"use client";
+
 import React, { useState, useMemo } from "react";
 import { Filter, Grid, List, Sparkles, TrendingUp } from "lucide-react";
-import { useAppContext } from "../context/AppContext";
-import { mockProducts } from "../data/mockData";
-import ProductCard from "../components/ui/ProductCard";
-import ProductModal from "../components/ui/ProductModal";
-import FilterSidebar from "../components/ui/FilterSidebar";
-import AIRecommendations from "../components/features/AIRecommendations";
-import HeroSection from "../components/features/HeroSection";
-import SkeletonCard from "../components/ui/SkeletonCard";
+import { useAppContext } from "@/context/AppContext";
+import { mockProducts } from "@/data/mockData";
+import ProductCard from "@/components/ui/ProductCard";
+import ProductModal from "@/components/ui/ProductModal";
+import FilterSidebar from "@/components/ui/FilterSidebar";
+import AIRecommendations from "@/components/features/AIRecommendations";
+import HeroSection from "@/components/features/HeroSection";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   const { state, dispatch } = useAppContext();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -198,25 +200,14 @@ const HomePage: React.FC = () => {
                 ) : (
                   <div className="text-center py-12">
                     <div className="w-24 h-24 mx-auto mb-4 text-gray-300">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                      </svg>
+                      <Sparkles className="w-full h-full" />
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Không tìm thấy khóa học phù hợp
+                      Không tìm thấy khóa học
                     </h3>
-                    <p className="text-gray-600 mb-4">
-                      Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm
+                    <p className="text-gray-500 mb-4">
+                      Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
                     </p>
-                    <button
-                      onClick={() => {
-                        dispatch({ type: "SET_FILTERS", payload: {} });
-                        dispatch({ type: "SET_SEARCH_QUERY", payload: "" });
-                      }}
-                      className="btn-primary"
-                    >
-                      Xóa bộ lọc
-                    </button>
                   </div>
                 )}
               </>
@@ -226,19 +217,17 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Mobile Filter Sidebar */}
-      {/* <FilterSidebar
+      <FilterSidebar
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-      /> */}
+      />
 
       {/* Product Modal */}
       <ProductModal
-        product={state.selectedProduct}
         isOpen={state.isProductModalOpen}
+        product={state.selectedProduct}
         onClose={handleCloseModal}
       />
     </div>
   );
-};
-
-export default HomePage;
+}

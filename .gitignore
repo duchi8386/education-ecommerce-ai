@@ -1,3 +1,20 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production builds
+.next/
+out/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Logs
 logs
 *.log
@@ -7,16 +24,28 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-package-lock.json
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
 
 # Backups
+backup/
 backups/
 *.dump
 mongodump/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
 # Editor directories and files
 .vscode/*
@@ -28,4 +57,16 @@ mongodump/
 *.njsproj
 *.sln
 *.sw?
-.env
+
+# OS generated files
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Temporary folders
+tmp/
+temp/
+
+# Lock files (optional, team preference)
+package-lock.json
+yarn.lock

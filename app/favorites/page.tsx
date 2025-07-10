@@ -1,38 +1,47 @@
-import React from 'react';
-import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
-import { useAppContext } from '../context/AppContext';
-import { mockProducts } from '../data/mockData';
-import ProductCard from '../components/ui/ProductCard';
-import ProductModal from '../components/ui/ProductModal';
+"use client";
 
-const FavoritesPage: React.FC = () => {
+import React from "react";
+import Link from "next/link";
+import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
+import { mockProducts } from "@/data/mockData";
+import ProductCard from "@/components/ui/ProductCard";
+import ProductModal from "@/components/ui/ProductModal";
+
+export default function FavoritesPage() {
   const { state, dispatch } = useAppContext();
 
-  const favoriteProducts = mockProducts.filter(product => 
+  const favoriteProducts = mockProducts.filter((product) =>
     state.favoriteProducts.includes(product.id)
   );
 
   const handleViewDetails = (product: any) => {
-    dispatch({ type: 'SET_SELECTED_PRODUCT', payload: product });
-    dispatch({ type: 'SET_PRODUCT_MODAL_OPEN', payload: true });
+    dispatch({ type: "SET_SELECTED_PRODUCT", payload: product });
+    dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: true });
   };
 
   const handleCloseModal = () => {
-    dispatch({ type: 'SET_PRODUCT_MODAL_OPEN', payload: false });
-    dispatch({ type: 'SET_SELECTED_PRODUCT', payload: null });
+    dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: false });
+    dispatch({ type: "SET_SELECTED_PRODUCT", payload: null });
   };
 
   const handleClearAllFavorites = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa tất cả khóa học yêu thích?')) {
-      state.favoriteProducts.forEach(productId => {
-        dispatch({ type: 'REMOVE_FROM_FAVORITES', payload: productId });
+    if (
+      window.confirm("Bạn có chắc chắn muốn xóa tất cả khóa học yêu thích?")
+    ) {
+      state.favoriteProducts.forEach((productId) => {
+        dispatch({ type: "REMOVE_FROM_FAVORITES", payload: productId });
       });
     }
   };
 
-  const totalValue = favoriteProducts.reduce((sum, product) => sum + product.price, 0);
-  const totalOriginalValue = favoriteProducts.reduce((sum, product) => 
-    sum + (product.originalPrice || product.price), 0
+  const totalValue = favoriteProducts.reduce(
+    (sum, product) => sum + product.price,
+    0
+  );
+  const totalOriginalValue = favoriteProducts.reduce(
+    (sum, product) => sum + (product.originalPrice || product.price),
+    0
   );
   const totalSavings = totalOriginalValue - totalValue;
 
@@ -48,10 +57,11 @@ const FavoritesPage: React.FC = () => {
                 Khóa học yêu thích
               </h1>
               <p className="text-gray-600 mt-2">
-                {favoriteProducts.length} khóa học đã được lưu vào danh sách yêu thích
+                {favoriteProducts.length} khóa học đã được lưu vào danh sách yêu
+                thích
               </p>
             </div>
-            
+
             {favoriteProducts.length > 0 && (
               <button
                 onClick={handleClearAllFavorites}
@@ -70,32 +80,36 @@ const FavoritesPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center md:text-left">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Tổng giá trị</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    Tổng giá trị
+                  </h3>
                   <div className="flex items-center justify-center md:justify-start space-x-2">
                     <span className="text-2xl font-bold text-gray-900">
-                      {new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
                       }).format(totalValue)}
                     </span>
                     {totalSavings > 0 && (
                       <span className="text-sm text-gray-500 line-through">
-                        {new Intl.NumberFormat('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND'
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
                         }).format(totalOriginalValue)}
                       </span>
                     )}
                   </div>
                 </div>
-                
+
                 {totalSavings > 0 && (
                   <div className="text-center md:text-left">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Tiết kiệm</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      Tiết kiệm
+                    </h3>
                     <span className="text-2xl font-bold text-green-600">
-                      {new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
                       }).format(totalSavings)}
                     </span>
                   </div>
@@ -118,13 +132,13 @@ const FavoritesPage: React.FC = () => {
                     product={product}
                     onViewDetails={handleViewDetails}
                   />
-                  
+
                   {/* Quick Actions */}
                   <div className="absolute top-3 right-12 flex space-x-2">
                     <button
                       onClick={() => {
                         // Add to cart logic would go here
-                        console.log('Added to cart:', product.name);
+                        console.log("Added to cart:", product.name);
                       }}
                       className="p-2 bg-white/90 hover:bg-white text-gray-600 hover:text-primary-600 rounded-full shadow-md transition-colors"
                       title="Thêm vào giỏ hàng"
@@ -146,15 +160,16 @@ const FavoritesPage: React.FC = () => {
               Chưa có khóa học yêu thích
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Hãy khám phá và thêm những khóa học mà bạn quan tâm vào danh sách yêu thích để dễ dàng theo dõi.
+              Hãy khám phá và thêm những khóa học mà bạn quan tâm vào danh sách
+              yêu thích để dễ dàng theo dõi.
             </p>
-            <a
+            <Link
               href="/"
               className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
             >
               <Heart className="h-5 w-5 mr-2" />
               Khám phá khóa học
-            </a>
+            </Link>
           </div>
         )}
       </div>
@@ -167,6 +182,4 @@ const FavoritesPage: React.FC = () => {
       />
     </div>
   );
-};
-
-export default FavoritesPage; 
+}

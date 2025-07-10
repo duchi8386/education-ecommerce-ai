@@ -1,12 +1,14 @@
-import React from 'react';
-import { Search } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
+"use client";
+
+import React from "react";
+import { Search } from "lucide-react";
+import { useAppContext } from "../../context/AppContext";
 
 const SearchBar: React.FC = () => {
   const { state, dispatch } = useAppContext();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: 'SET_SEARCH_QUERY', payload: e.target.value });
+    dispatch({ type: "SET_SEARCH_QUERY", payload: e.target.value });
   };
 
   return (
@@ -25,4 +27,4 @@ const SearchBar: React.FC = () => {
   );
 };
 
-export default SearchBar; 
+export default SearchBar;

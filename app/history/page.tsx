@@ -1,33 +1,37 @@
-import React, { useState } from 'react';
-import { Clock, Search, Filter, Trash2, Eye } from 'lucide-react';
-import { useAppContext } from '../context/AppContext';
-import { mockProducts } from '../data/mockData';
-import ProductCard from '../components/ui/ProductCard';
-import ProductModal from '../components/ui/ProductModal';
+"use client";
 
-const HistoryPage: React.FC = () => {
+import React, { useState } from "react";
+import Link from "next/link";
+import { Clock, Search, Filter, Trash2, Eye } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
+import { mockProducts } from "@/data/mockData";
+import ProductCard from "@/components/ui/ProductCard";
+import ProductModal from "@/components/ui/ProductModal";
+
+export default function HistoryPage() {
   const { state, dispatch } = useAppContext();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'recent' | 'alphabetical'>('recent');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"recent" | "alphabetical">("recent");
 
   // Get products from view history
   const historyProducts = state.viewHistory
-    .map(historyItem => {
-      const product = mockProducts.find(p => p.id === historyItem.productId);
+    .map((historyItem) => {
+      const product = mockProducts.find((p) => p.id === historyItem.productId);
       return product ? { ...product, viewedAt: historyItem.viewedAt } : null;
     })
     .filter(Boolean) as any[];
 
   // Filter and sort history
   const filteredHistory = historyProducts
-    .filter(product => 
-      !searchQuery || 
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter(
+      (product) =>
+        !searchQuery ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortBy === 'recent') {
+      if (sortBy === "recent") {
         return new Date(b.viewedAt).getTime() - new Date(a.viewedAt).getTime();
       } else {
         return a.name.localeCompare(b.name);
@@ -35,71 +39,77 @@ const HistoryPage: React.FC = () => {
     });
 
   const handleViewDetails = (product: any) => {
-    dispatch({ type: 'SET_SELECTED_PRODUCT', payload: product });
-    dispatch({ type: 'SET_PRODUCT_MODAL_OPEN', payload: true });
+    dispatch({ type: "SET_SELECTED_PRODUCT", payload: product });
+    dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: true });
   };
 
   const handleCloseModal = () => {
-    dispatch({ type: 'SET_PRODUCT_MODAL_OPEN', payload: false });
-    dispatch({ type: 'SET_SELECTED_PRODUCT', payload: null });
+    dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: false });
+    dispatch({ type: "SET_SELECTED_PRODUCT", payload: null });
   };
 
   const handleClearHistory = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem?')) {
-      localStorage.removeItem('viewHistory');
+    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem?")) {
+      localStorage.removeItem("viewHistory");
       // Reset state
-      dispatch({ type: 'ADD_TO_HISTORY', payload: { productId: '', viewedAt: new Date() } });
+      dispatch({
+        type: "ADD_TO_HISTORY",
+        payload: { productId: "", viewedAt: new Date() },
+      });
       window.location.reload();
     }
   };
 
   const handleRemoveItem = (productId: string) => {
-    const newHistory = state.viewHistory.filter(item => item.productId !== productId);
-    localStorage.setItem('viewHistory', JSON.stringify(newHistory));
+    const newHistory = state.viewHistory.filter(
+      (item) => item.productId !== productId
+    );
+    localStorage.setItem("viewHistory", JSON.stringify(newHistory));
     window.location.reload();
   };
 
   const formatDate = (date: Date) => {
     const now = new Date();
-    const diffInHours = (now.getTime() - new Date(date).getTime()) / (1000 * 60 * 60);
-    
+    const diffInHours =
+      (now.getTime() - new Date(date).getTime()) / (1000 * 60 * 60);
+
     if (diffInHours < 1) {
-      return 'Vừa xem';
+      return "Vừa xem";
     } else if (diffInHours < 24) {
       return `${Math.floor(diffInHours)} giờ trước`;
     } else if (diffInHours < 24 * 7) {
       return `${Math.floor(diffInHours / 24)} ngày trước`;
     } else {
-      return new Date(date).toLocaleDateString('vi-VN');
+      return new Date(date).toLocaleDateString("vi-VN");
     }
   };
 
   const groupByDate = (products: any[]) => {
     const groups: { [key: string]: any[] } = {};
-    
-    products.forEach(product => {
+
+    products.forEach((product) => {
       const date = new Date(product.viewedAt);
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      
+
       let groupKey;
       if (date.toDateString() === today.toDateString()) {
-        groupKey = 'Hôm nay';
+        groupKey = "Hôm nay";
       } else if (date.toDateString() === yesterday.toDateString()) {
-        groupKey = 'Hôm qua';
+        groupKey = "Hôm qua";
       } else if (date > new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)) {
-        groupKey = 'Tuần này';
+        groupKey = "Tuần này";
       } else {
-        groupKey = 'Cũ hơn';
+        groupKey = "Cũ hơn";
       }
-      
+
       if (!groups[groupKey]) {
         groups[groupKey] = [];
       }
       groups[groupKey].push(product);
     });
-    
+
     return groups;
   };
 
@@ -120,7 +130,7 @@ const HistoryPage: React.FC = () => {
                 {state.viewHistory.length} khóa học đã xem gần đây
               </p>
             </div>
-            
+
             {state.viewHistory.length > 0 && (
               <button
                 onClick={handleClearHistory}
@@ -152,10 +162,14 @@ const HistoryPage: React.FC = () => {
 
                 {/* Sort */}
                 <div className="flex items-center space-x-4">
-                  <label className="text-sm font-medium text-gray-700">Sắp xếp:</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Sắp xếp:
+                  </label>
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as 'recent' | 'alphabetical')}
+                    onChange={(e) =>
+                      setSortBy(e.target.value as "recent" | "alphabetical")
+                    }
                     className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   >
                     <option value="recent">Xem gần nhất</option>
@@ -166,7 +180,7 @@ const HistoryPage: React.FC = () => {
             </div>
 
             {/* History Content */}
-            {sortBy === 'recent' ? (
+            {sortBy === "recent" ? (
               /* Grouped by Date */
               <div className="space-y-8">
                 {Object.entries(groupedHistory).map(([dateGroup, products]) => (
@@ -177,12 +191,15 @@ const HistoryPage: React.FC = () => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {products.map((product) => (
-                        <div key={`${product.id}-${product.viewedAt}`} className="relative">
+                        <div
+                          key={`${product.id}-${product.viewedAt}`}
+                          className="relative"
+                        >
                           <ProductCard
                             product={product}
                             onViewDetails={handleViewDetails}
                           />
-                          
+
                           {/* View Time & Remove Button */}
                           <div className="absolute top-3 right-12 flex items-center space-x-2">
                             <div className="bg-white/90 px-2 py-1 rounded-md text-xs text-gray-600">
@@ -206,12 +223,15 @@ const HistoryPage: React.FC = () => {
               /* Simple Grid */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredHistory.map((product) => (
-                  <div key={`${product.id}-${product.viewedAt}`} className="relative">
+                  <div
+                    key={`${product.id}-${product.viewedAt}`}
+                    className="relative"
+                  >
                     <ProductCard
                       product={product}
                       onViewDetails={handleViewDetails}
                     />
-                    
+
                     {/* View Time & Remove Button */}
                     <div className="absolute top-3 right-12 flex items-center space-x-2">
                       <div className="bg-white/90 px-2 py-1 rounded-md text-xs text-gray-600">
@@ -236,9 +256,7 @@ const HistoryPage: React.FC = () => {
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   Không tìm thấy kết quả
                 </h3>
-                <p className="text-gray-600">
-                  Thử tìm kiếm với từ khóa khác
-                </p>
+                <p className="text-gray-600">Thử tìm kiếm với từ khóa khác</p>
               </div>
             )}
           </>
@@ -252,15 +270,16 @@ const HistoryPage: React.FC = () => {
               Chưa có lịch sử xem
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Khi bạn xem chi tiết các khóa học, chúng sẽ được lưu vào đây để bạn dễ dàng tìm lại.
+              Khi bạn xem chi tiết các khóa học, chúng sẽ được lưu vào đây để
+              bạn dễ dàng tìm lại.
             </p>
-            <a
+            <Link
               href="/"
               className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
             >
               <Eye className="h-5 w-5 mr-2" />
               Khám phá khóa học
-            </a>
+            </Link>
           </div>
         )}
       </div>
@@ -273,6 +292,4 @@ const HistoryPage: React.FC = () => {
       />
     </div>
   );
-};
-
-export default HistoryPage; 
+}

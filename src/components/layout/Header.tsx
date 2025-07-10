@@ -1,23 +1,28 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, Clock, MessageCircle, BookOpen } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
-import SearchBar from '../ui/SearchBar';
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Search, Heart, Clock, MessageCircle, BookOpen } from "lucide-react";
+import { useAppContext } from "../../context/AppContext";
+import SearchBar from "../ui/SearchBar";
 
 const Header: React.FC = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const { state, dispatch } = useAppContext();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <BookOpen className="h-8 w-8 text-primary-600" />
-            <span className="text-xl font-bold text-gray-900">EduCommerce AI</span>
+            <span className="text-xl font-bold text-gray-900">
+              EduCommerce AI
+            </span>
           </Link>
 
           {/* Search Bar - Hidden on mobile */}
@@ -28,11 +33,11 @@ const Header: React.FC = () => {
           {/* Navigation */}
           <nav className="flex items-center space-x-6">
             <Link
-              to="/"
+              href="/"
               className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/') 
-                  ? 'text-primary-600 bg-primary-50' 
-                  : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                isActive("/")
+                  ? "text-primary-600 bg-primary-50"
+                  : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
               }`}
             >
               <Search className="h-4 w-4" />
@@ -40,11 +45,11 @@ const Header: React.FC = () => {
             </Link>
 
             <Link
-              to="/favorites"
+              href="/favorites"
               className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors relative ${
-                isActive('/favorites') 
-                  ? 'text-primary-600 bg-primary-50' 
-                  : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                isActive("/favorites")
+                  ? "text-primary-600 bg-primary-50"
+                  : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
               }`}
             >
               <Heart className="h-4 w-4" />
@@ -57,11 +62,11 @@ const Header: React.FC = () => {
             </Link>
 
             <Link
-              to="/history"
+              href="/history"
               className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/history') 
-                  ? 'text-primary-600 bg-primary-50' 
-                  : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                isActive("/history")
+                  ? "text-primary-600 bg-primary-50"
+                  : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
               }`}
             >
               <Clock className="h-4 w-4" />
@@ -69,7 +74,9 @@ const Header: React.FC = () => {
             </Link>
 
             <button
-              onClick={() => dispatch({ type: 'SET_CHAT_OPEN', payload: !state.isChatOpen })}
+              onClick={() =>
+                dispatch({ type: "SET_CHAT_OPEN", payload: !state.isChatOpen })
+              }
               className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors"
             >
               <MessageCircle className="h-4 w-4" />
@@ -87,4 +94,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header; 
+export default Header;

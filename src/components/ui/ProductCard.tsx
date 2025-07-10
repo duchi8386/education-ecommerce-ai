@@ -1,57 +1,62 @@
-import React from 'react';
-import { Heart, Star, Users, Clock, Tag } from 'lucide-react';
-import { Product } from '../../types';
-import { useAppContext } from '../../context/AppContext';
+"use client";
+
+import React from "react";
+import { Heart, Star, Users, Clock, Tag } from "lucide-react";
+import { Product } from "../../types";
+import { useAppContext } from "../../context/AppContext";
 
 interface ProductCardProps {
   product: Product;
   onViewDetails: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onViewDetails,
+}) => {
   const { state, dispatch } = useAppContext();
   const isFavorite = state.favoriteProducts.includes(product.id);
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isFavorite) {
-      dispatch({ type: 'REMOVE_FROM_FAVORITES', payload: product.id });
+      dispatch({ type: "REMOVE_FROM_FAVORITES", payload: product.id });
     } else {
-      dispatch({ type: 'ADD_TO_FAVORITES', payload: product.id });
+      dispatch({ type: "ADD_TO_FAVORITES", payload: product.id });
     }
   };
 
   const handleCardClick = () => {
     // Add to view history
-    dispatch({ 
-      type: 'ADD_TO_HISTORY', 
-      payload: { productId: product.id, viewedAt: new Date() }
+    dispatch({
+      type: "ADD_TO_HISTORY",
+      payload: { productId: product.id, viewedAt: new Date() },
     });
     onViewDetails(product);
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Beginner':
-        return 'bg-green-100 text-green-800';
-      case 'Intermediate':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Advanced':
-        return 'bg-red-100 text-red-800';
+      case "Beginner":
+        return "bg-green-100 text-green-800";
+      case "Intermediate":
+        return "bg-yellow-100 text-yellow-800";
+      case "Advanced":
+        return "bg-red-100 text-red-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
       onClick={handleCardClick}
     >
@@ -70,12 +75,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
         <button
           onClick={handleToggleFavorite}
           className={`absolute top-3 right-3 p-2 rounded-full transition-colors ${
-            isFavorite 
-              ? 'bg-red-500 text-white' 
-              : 'bg-white/90 text-gray-600 hover:bg-red-500 hover:text-white'
+            isFavorite
+              ? "bg-red-500 text-white"
+              : "bg-white/90 text-gray-600 hover:bg-red-500 hover:text-white"
           }`}
         >
-          <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
+          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
         </button>
       </div>
 
@@ -86,7 +91,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           <span className="text-xs font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded-md">
             {product.category}
           </span>
-          <span className={`text-xs font-medium px-2 py-1 rounded-md ${getLevelColor(product.level)}`}>
+          <span
+            className={`text-xs font-medium px-2 py-1 rounded-md ${getLevelColor(
+              product.level
+            )}`}
+          >
             {product.level}
           </span>
         </div>
@@ -97,10 +106,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
         </h3>
 
         {/* Instructor */}
-        <p className="text-sm text-gray-600 mb-2">Giảng viên: {product.instructor}</p>
+        <p className="text-sm text-gray-600 mb-2">
+          Giảng viên: {product.instructor}
+        </p>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.shortDescription}</p>
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+          {product.shortDescription}
+        </p>
 
         {/* Stats */}
         <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
@@ -148,4 +161,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
   );
 };
 
-export default ProductCard; 
+export default ProductCard;
