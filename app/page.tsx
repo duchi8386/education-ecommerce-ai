@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Filter, Grid, List, Sparkles, TrendingUp } from "lucide-react";
+import { Filter, Grid, List, TrendingUp } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import { fetchProducts } from "@/data/mockData";
 import { Product } from "@/types";
@@ -11,7 +11,6 @@ import FilterSidebar from "@/components/ui/FilterSidebar";
 import AIRecommendations from "@/components/features/AIRecommendations";
 import HeroSection from "@/components/features/HeroSection";
 import SkeletonCard from "@/components/ui/SkeletonCard";
-
 
 export default function HomePage() {
   const { state, dispatch } = useAppContext();
@@ -130,8 +129,6 @@ export default function HomePage() {
       <HeroSection />
 
       <div className="container mx-auto px-4 py-8">
-
-        
         {/* AI Recommendations Section */}
         <AIRecommendations />
 

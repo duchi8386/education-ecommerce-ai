@@ -7,10 +7,8 @@ import {
   AlertCircle,
   Info,
   AlertTriangle,
-  Heart,
 } from "lucide-react";
 import { Toast as ToastType } from "../../types/toast";
-import FavoriteHeartIcon from "./FavoriteHeartIcon";
 
 interface ToastProps {
   toast: ToastType;
