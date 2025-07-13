@@ -21,12 +21,14 @@ Nền tảng giáo dục thương mại điện tử hiện đại tích hợp t
 
 ## 🛠 Công nghệ sử dụng
 
-- **Framework**: React 18 với TypeScript
+- **Framework**: Next.js 15 với TypeScript
+- **Routing**: Next.js App Router
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
-- **Routing**: React Router DOM
+- **UI Components**: Headless UI React
+- **HTTP Client**: Axios
 - **State Management**: React Context + useReducer
-- **Build Tool**: Vite
+- **Build Tool**: Next.js
 - **Package Manager**: npm
 
 ## 📦 Cài đặt và chạy
@@ -52,49 +54,51 @@ Nền tảng giáo dục thương mại điện tử hiện đại tích hợp t
    ```bash
    npm run dev
    ```
-   Ứng dụng sẽ chạy tại `http://localhost:5173`
+   Ứng dụng sẽ chạy tại `http://localhost:3000`
 
 4. **Build cho production**
    ```bash
    npm run build
    ```
 
-5. **Preview bản build**
+5. **Chạy production server**
    ```bash
-   npm run preview
+   npm run start
    ```
 
 ## 🏗 Cấu trúc dự án
 
 ```
+app/                      # Next.js App Router
+├── favorites/           # Trang yêu thích
+│   └── page.tsx
+├── history/            # Trang lịch sử
+│   └── page.tsx
+├── layout.tsx          # Layout chính
+├── page.tsx            # Trang chủ
+└── globals.css         # Global styles
+
 src/
-├── components/           # Components tái sử dụng
-│   ├── features/        # Components tính năng chính
+├── components/         # Components tái sử dụng
+│   ├── features/       # Components tính năng chính
 │   │   ├── AIRecommendations.tsx
 │   │   ├── Chatbot.tsx
 │   │   └── HeroSection.tsx
-│   ├── layout/          # Components layout
+│   ├── layout/         # Components layout
 │   │   ├── Header.tsx
 │   │   └── Footer.tsx
-│   └── ui/              # Components UI cơ bản
+│   └── ui/             # Components UI cơ bản
 │       ├── ProductCard.tsx
 │       ├── ProductModal.tsx
 │       ├── SearchBar.tsx
 │       ├── FilterSidebar.tsx
 │       └── SkeletonCard.tsx
-├── context/             # Context API
+├── context/            # React Context
 │   └── AppContext.tsx
-├── data/               # Mock data
+├── data/              # Mock data
 │   └── mockData.ts
-├── pages/              # Các trang chính
-│   ├── HomePage.tsx
-│   ├── FavoritesPage.tsx
-│   └── HistoryPage.tsx
-├── types/              # Type definitions
-│   └── index.ts
-├── App.tsx             # Component gốc
-├── main.tsx           # Entry point
-└── index.css          # Global styles
+└── types/             # Type definitions
+    └── index.ts
 ```
 
 ## 🎨 Thiết kế UI/UX
@@ -126,15 +130,24 @@ src/
 - Gợi ý sản phẩm phù hợp
 - Giao diện chat thân thiện
 
-### 3. Mock API
+### 3. Mock API Logic
 ```typescript
-// Gợi ý sản phẩm
-GET /api/suggestions?userId=xxx
-Response: {
-  products: Product[],
-  reasons: string[],
-  confidence: number
-}
+// AI Recommendations trong components/features/AIRecommendations.tsx
+const handleGetRecommendations = async () => {
+  // Mock API call với delay
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // Logic gợi ý dựa trên:
+  // - Lịch sử xem (personalized)
+  // - Số lượng học viên (trending)  
+  // - Danh mục tương tự (similar)
+};
+
+// Chatbot Response trong components/features/Chatbot.tsx
+const generateAIResponse = (userInput: string) => {
+  // Phân tích keywords và trả về response phù hợp
+  // Kèm theo danh sách sản phẩm được gợi ý
+};
 ```
 
 ## 📱 Responsive Design
@@ -156,9 +169,9 @@ Response: {
 # Development
 npm run dev          # Chạy dev server
 
-# Build
+# Build & Production
 npm run build        # Build cho production
-npm run preview      # Preview bản build
+npm run start        # Chạy production server
 
 # Code quality  
 npm run lint         # Kiểm tra lỗi ESLint
@@ -206,7 +219,7 @@ npm run type-check   # Kiểm tra TypeScript
 - **Fast Loading**: Tối ưu hóa tốc độ tải
 - **Lazy Loading**: Tải hình ảnh khi cần
 - **Efficient State**: Quản lý state hiệu quả
-- **Modern Build**: Vite cho build nhanh
+- **Modern Build**: Next.js với tối ưu hóa build tự động
 
 ### AI Integration
 - **Smart Recommendations**: Thuật toán gợi ý thông minh
@@ -239,4 +252,4 @@ MIT License - Chi tiết xem file LICENSE
 
 ---
 
-**Lưu ý**: Đây là ứng dụng demo sử dụng mock data. Trong thực tế, cần tích hợp với backend APIs và database thật. 
+**Lưu ý**: Đây là ứng dụng demo sử dụng mock data và logic AI được mô phỏng. Trong thực tế, cần tích hợp với backend APIs, database thật và các mô hình AI thực tế. 
