@@ -11,7 +11,7 @@ import FilterSidebar from "@/components/ui/FilterSidebar";
 import AIRecommendations from "@/components/features/AIRecommendations";
 import HeroSection from "@/components/features/HeroSection";
 import SkeletonCard from "@/components/ui/SkeletonCard";
-import FavoriteDemo from "@/components/features/FavoriteDemo";
+
 
 export default function HomePage() {
   const { state, dispatch } = useAppContext();
@@ -130,8 +130,7 @@ export default function HomePage() {
       <HeroSection />
 
       <div className="container mx-auto px-4 py-8">
-        {/* Favorite Demo Section */}
-        <FavoriteDemo />
+
         
         {/* AI Recommendations Section */}
         <AIRecommendations />
