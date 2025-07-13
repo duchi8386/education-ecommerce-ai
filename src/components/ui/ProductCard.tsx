@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Star, Users, Clock, Tag } from "lucide-react";
+import React from "react";
+import { Star, Users, Clock } from "lucide-react";
 import { Product } from "../../types";
 import { useAppContext } from "../../context/AppContext";
 import { useFavorites } from "../../hooks/useFavorites";
