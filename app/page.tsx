@@ -1,28 +1,52 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Filter, Grid, List, Sparkles, TrendingUp } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
-import { mockProducts } from "@/data/mockData";
+import { fetchProducts } from "@/data/mockData";
+import { Product } from "@/types";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductModal from "@/components/ui/ProductModal";
 import FilterSidebar from "@/components/ui/FilterSidebar";
 import AIRecommendations from "@/components/features/AIRecommendations";
 import HeroSection from "@/components/features/HeroSection";
 import SkeletonCard from "@/components/ui/SkeletonCard";
+import FavoriteDemo from "@/components/features/FavoriteDemo";
 
 export default function HomePage() {
   const { state, dispatch } = useAppContext();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Gọi API lấy danh sách sản phẩm khi component mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setIsLoadingProducts(true);
+        setError(null);
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   // Filter and search products
   const filteredProducts = useMemo(() => {
-    let products = [...mockProducts];
+    let filtered = [...products];
 
     // Search
     if (state.searchQuery) {
-      products = products.filter(
+      filtered = filtered.filter(
         (product) =>
           product.name
             .toLowerCase()
@@ -41,7 +65,7 @@ export default function HomePage() {
 
     // Category filter
     if (state.filters.category) {
-      products = products.filter(
+      filtered = filtered.filter(
         (product) => product.category === state.filters.category
       );
     }
@@ -49,7 +73,7 @@ export default function HomePage() {
     // Price range filter
     if (state.filters.priceRange) {
       const { min, max } = state.filters.priceRange;
-      products = products.filter(
+      filtered = filtered.filter(
         (product) =>
           product.price >= min && (max === Infinity || product.price <= max)
       );
@@ -57,7 +81,7 @@ export default function HomePage() {
 
     // Level filter
     if (state.filters.level && state.filters.level.length > 0) {
-      products = products.filter((product) =>
+      filtered = filtered.filter((product) =>
         state.filters.level!.includes(product.level)
       );
     }
@@ -66,19 +90,19 @@ export default function HomePage() {
     if (state.filters.sortBy) {
       switch (state.filters.sortBy) {
         case "price-asc":
-          products.sort((a, b) => a.price - b.price);
+          filtered.sort((a, b) => a.price - b.price);
           break;
         case "price-desc":
-          products.sort((a, b) => b.price - a.price);
+          filtered.sort((a, b) => b.price - a.price);
           break;
         case "rating":
-          products.sort((a, b) => b.rating - a.rating);
+          filtered.sort((a, b) => b.rating - a.rating);
           break;
         case "popular":
-          products.sort((a, b) => b.students - a.students);
+          filtered.sort((a, b) => b.students - a.students);
           break;
         case "newest":
-          products.sort(
+          filtered.sort(
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
@@ -88,10 +112,10 @@ export default function HomePage() {
       }
     }
 
-    return products;
-  }, [mockProducts, state.searchQuery, state.filters]);
+    return filtered;
+  }, [products, state.searchQuery, state.filters]);
 
-  const handleViewDetails = (product: any) => {
+  const handleViewDetails = (product: Product) => {
     dispatch({ type: "SET_SELECTED_PRODUCT", payload: product });
     dispatch({ type: "SET_PRODUCT_MODAL_OPEN", payload: true });
   };
@@ -103,58 +127,59 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <HeroSection />
 
-      {/* AI Recommendations */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 py-8">
+        {/* Favorite Demo Section */}
+        <FavoriteDemo />
+        
+        {/* AI Recommendations Section */}
         <AIRecommendations />
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="flex flex-col lg:flex-row lg:space-x-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Filter Sidebar */}
-          <div className="hidden lg:block lg:w-80 flex-shrink-0">
-            <FilterSidebar isOpen={true} onClose={() => {}} />
+          <div className="lg:w-64 lg:flex-shrink-0  ">
+            <FilterSidebar
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+            />
           </div>
 
-          {/* Products Section */}
-          <div className="flex-1">
-            {/* Mobile Filter Button & View Toggle */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div className="flex items-center space-x-4 mb-4 sm:mb-0">
                 <button
                   onClick={() => setIsFilterOpen(true)}
                   className="lg:hidden flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <Filter className="h-4 w-4" />
-                  <span>Bộ lọc</span>
+                  <span>Lọc</span>
                 </button>
-
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900">
                   Khóa học ({filteredProducts.length})
-                </h2>
+                </h1>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <div className="flex border border-gray-300 rounded-lg overflow-hidden">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-1 bg-white border border-gray-300 rounded-lg p-1">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`p-2 transition-colors ${
+                    className={`p-2 rounded ${
                       viewMode === "grid"
-                        ? "bg-primary-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50"
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     <Grid className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`p-2 transition-colors ${
+                    className={`p-2 rounded ${
                       viewMode === "list"
-                        ? "bg-primary-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50"
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     <List className="h-4 w-4" />
@@ -163,71 +188,67 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Loading State */}
-            {state.isLoading && (
-              <div
-                className={`grid gap-6 ${
-                  viewMode === "grid"
-                    ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-                    : "grid-cols-1"
-                }`}
-              >
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <SkeletonCard key={index} />
-                ))}
+            {/* Error State */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                <p>{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-2 text-sm underline hover:no-underline"
+                >
+                  Thử lại
+                </button>
               </div>
             )}
 
-            {/* Products Grid/List */}
-            {!state.isLoading && (
-              <>
-                {filteredProducts.length > 0 ? (
-                  <div
-                    className={`grid gap-6 ${
-                      viewMode === "grid"
-                        ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-                        : "grid-cols-1"
-                    }`}
-                  >
-                    {filteredProducts.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        onViewDetails={handleViewDetails}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="w-24 h-24 mx-auto mb-4 text-gray-300">
-                      <Sparkles className="w-full h-full" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Không tìm thấy khóa học
-                    </h3>
-                    <p className="text-gray-500 mb-4">
-                      Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
-                    </p>
-                  </div>
-                )}
-              </>
+            {/* Products Grid */}
+            {isLoadingProducts ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 9 }).map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 mb-4">
+                  <TrendingUp className="h-16 w-16 mx-auto" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Không tìm thấy khóa học
+                </h3>
+                <p className="text-gray-600">
+                  Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm
+                </p>
+              </div>
+            ) : (
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    : "space-y-4"
+                }
+              >
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onViewDetails={handleViewDetails}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>
+
+        {/* Product Modal */}
+        {state.isProductModalOpen && state.selectedProduct && (
+          <ProductModal
+            isOpen={state.isProductModalOpen}
+            product={state.selectedProduct}
+            onClose={handleCloseModal}
+          />
+        )}
       </div>
-
-      {/* Mobile Filter Sidebar */}
-      <FilterSidebar
-        isOpen={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-      />
-
-      {/* Product Modal */}
-      <ProductModal
-        isOpen={state.isProductModalOpen}
-        product={state.selectedProduct}
-        onClose={handleCloseModal}
-      />
     </div>
   );
 }

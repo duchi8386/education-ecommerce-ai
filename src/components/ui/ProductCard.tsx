@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
-import { Heart, Star, Users, Clock, Tag } from "lucide-react";
+import React, { useState } from "react";
+import { Star, Users, Clock, Tag } from "lucide-react";
 import { Product } from "../../types";
 import { useAppContext } from "../../context/AppContext";
+import { useFavorites } from "../../hooks/useFavorites";
+import FavoriteHeartIcon from "./FavoriteHeartIcon";
 
 interface ProductCardProps {
   product: Product;
@@ -14,16 +16,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onViewDetails,
 }) => {
-  const { state, dispatch } = useAppContext();
-  const isFavorite = state.favoriteProducts.includes(product.id);
+  const { dispatch } = useAppContext();
+  const { toggleFavorite, isFavorite: checkIsFavorite } = useFavorites();
+  const isFavorite = checkIsFavorite(product.id);
+
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isFavorite) {
-      dispatch({ type: "REMOVE_FROM_FAVORITES", payload: product.id });
-    } else {
-      dispatch({ type: "ADD_TO_FAVORITES", payload: product.id });
-    }
+    toggleFavorite(product);
   };
 
   const handleCardClick = () => {
@@ -56,10 +56,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div
-      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
-      onClick={handleCardClick}
-    >
+    <>
+      <div
+        className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+        onClick={handleCardClick}
+      >
       {/* Image */}
       <div className="relative">
         <img
@@ -74,13 +75,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
         <button
           onClick={handleToggleFavorite}
-          className={`absolute top-3 right-3 p-2 rounded-full transition-colors ${
+          className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95 shadow-md hover:shadow-lg ${
             isFavorite
-              ? "bg-red-500 text-white"
-              : "bg-white/90 text-gray-600 hover:bg-red-500 hover:text-white"
+              ? "bg-red-50 text-red-500 border-2 border-red-200"
+              : "bg-white/90 text-gray-600 hover:bg-red-50 hover:text-red-500 backdrop-blur-sm border-2 border-white/20 hover:border-red-200"
           }`}
         >
-          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+          <FavoriteHeartIcon 
+            isFavorite={isFavorite} 
+            size="sm"
+          />
         </button>
       </div>
 
@@ -157,7 +161,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

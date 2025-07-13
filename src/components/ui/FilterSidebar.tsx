@@ -76,12 +76,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 lg:relative lg:transform-none lg:shadow-none lg:z-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        className={`
+          bg-white rounded-lg border border-gray-200 shadow-sm min-h-[500px]
+          lg:block lg:static lg:transform-none lg:w-full lg:h-auto lg:translate-x-0
+          fixed left-0 top-0 h-full w-80 shadow-xl z-50 transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
       >
-        <div className="p-6 h-full overflow-y-auto">
-          {/* Header */}
+        <div className="p-6 h-full lg:h-auto overflow-y-auto lg:overflow-visible">
+          {/* Header - Mobile only */}
           <div className="flex items-center justify-between mb-6 lg:hidden">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
               <Filter className="h-5 w-5 mr-2" />
@@ -95,6 +98,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
 
+          {/* Header - Desktop only */}
           <div className="hidden lg:block mb-6">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
               <Filter className="h-5 w-5 mr-2" />

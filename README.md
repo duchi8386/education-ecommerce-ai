@@ -2,12 +2,16 @@
 
 Nền tảng giáo dục thương mại điện tử hiện đại tích hợp trí tuệ nhân tạo, giúp người dùng tìm kiếm và khám phá các khóa học phù hợp một cách thông minh và hiệu quả.
 
+## 🎯 Mô tả dự án
+
+Dự án này được phát triển theo yêu cầu kiểm tra Front-end, xây dựng giao diện cho sàn giáo dục thương mại điện tử với tính năng AI gợi ý sản phẩm thông minh. Người dùng có thể tìm kiếm, lọc, yêu thích các khóa học và nhận gợi ý từ AI dựa trên hành vi và sở thích cá nhân.
+
 ## 🚀 Tính năng chính
 
 ### ✅ Yêu cầu bắt buộc
 - ✅ **Hiển thị danh sách sản phẩm**: Giao diện hiện đại với thông tin đầy đủ (tên, giá, ảnh, mô tả ngắn)
 - ✅ **Tìm kiếm và lọc**: Thanh tìm kiếm và bộ lọc theo giá, danh mục, mức độ
-- ✅ **Gợi ý thông minh AI**: API mô phỏng với các thuật toán gợi ý dựa trên hành vi người dùng
+- ✅ **Gợi ý thông minh AI**: Nút "Gợi ý sản phẩm phù hợp" gọi API `/api/suggestions?userId=xxx`
 - ✅ **Modal chi tiết sản phẩm**: Hiển thị thông tin chi tiết với giao diện đẹp mắt
 - ✅ **Chức năng yêu thích**: Lưu trữ và quản lý danh sách sản phẩm yêu thích
 - ✅ **Responsive design**: Tối ưu cho mọi thiết bị (desktop, tablet, mobile)
@@ -24,12 +28,36 @@ Nền tảng giáo dục thương mại điện tử hiện đại tích hợp t
 - **Framework**: Next.js 15 với TypeScript
 - **Routing**: Next.js App Router
 - **Styling**: Tailwind CSS
-- **Icons**: Lucide React
+- **Icons**: Lucide React (v0.468.0+)
 - **UI Components**: Headless UI React
 - **HTTP Client**: Axios
 - **State Management**: React Context + useReducer
 - **Build Tool**: Next.js
 - **Package Manager**: npm
+
+## 🔧 Mock API
+
+Dự án sử dụng mock API với 2 endpoint chính:
+
+### 1. API Products
+```typescript
+// URL: /api/products
+export const fetchProducts = async (): Promise<Product[]>
+```
+
+### 2. API Suggestions (Theo yêu cầu đề bài)
+```typescript
+// URL: /api/suggestions?userId=xxx
+export const fetchSuggestions = async (userId: string): Promise<{
+  products: Product[];
+  reasons: string[];
+  confidence: number;
+}>
+```
+
+### 3. Các API khác
+- `fetchProductById(id: string)`: Lấy chi tiết sản phẩm
+- `searchProducts(query: string)`: Tìm kiếm sản phẩm
 
 ## 📦 Cài đặt và chạy
 
@@ -81,9 +109,9 @@ app/                      # Next.js App Router
 src/
 ├── components/         # Components tái sử dụng
 │   ├── features/       # Components tính năng chính
-│   │   ├── AIRecommendations.tsx
-│   │   ├── Chatbot.tsx
-│   │   └── HeroSection.tsx
+│   │   ├── AIRecommendations.tsx  # Gợi ý AI
+│   │   ├── Chatbot.tsx            # Chatbot AI
+│   │   └── HeroSection.tsx        # Hero section
 │   ├── layout/         # Components layout
 │   │   ├── Header.tsx
 │   │   └── Footer.tsx
@@ -95,10 +123,43 @@ src/
 │       └── SkeletonCard.tsx
 ├── context/            # React Context
 │   └── AppContext.tsx
-├── data/              # Mock data
+├── data/              # Mock data và API
 │   └── mockData.ts
 └── types/             # Type definitions
     └── index.ts
+```
+
+## 🤖 Tính năng AI
+
+### 1. Gợi ý thông minh
+- **Nút "Gợi ý sản phẩm phù hợp"**: Gọi API `/api/suggestions?userId=xxx`
+- **Cá nhân hóa**: Dựa trên lịch sử xem và sở thích
+- **Thịnh hành**: Khóa học phổ biến nhất
+- **Tương tự**: Dựa trên khóa học đã xem
+
+### 2. Chatbot tư vấn
+- Hiểu ngữ cảnh tiếng Việt
+- Gợi ý sản phẩm phù hợp
+- Giao diện chat thân thiện
+
+### 3. Mock API Logic
+```typescript
+// AI Recommendations trong components/features/AIRecommendations.tsx
+const handleGetSuggestions = async () => {
+  // Mock API call với delay
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  // Logic gợi ý dựa trên:
+  // - Lịch sử xem (personalized)
+  // - Số lượng học viên (trending)  
+  // - Danh mục tương tự (similar)
+};
+
+// Chatbot Response trong components/features/Chatbot.tsx
+const generateAIResponse = (userInput: string) => {
+  // Phân tích keywords và trả về response phù hợp
+  // Kèm theo danh sách sản phẩm được gợi ý
+};
 ```
 
 ## 🎨 Thiết kế UI/UX
@@ -117,38 +178,6 @@ src/
 - Hover effects
 - Loading animations
 - Skeleton loaders
-
-## 🤖 Tính năng AI
-
-### 1. Gợi ý thông minh
-- **Cá nhân hóa**: Dựa trên lịch sử xem và sở thích
-- **Thịnh hành**: Khóa học phổ biến nhất
-- **Tương tự**: Dựa trên khóa học đã xem
-
-### 2. Chatbot tư vấn
-- Hiểu ngữ cảnh tiếng Việt
-- Gợi ý sản phẩm phù hợp
-- Giao diện chat thân thiện
-
-### 3. Mock API Logic
-```typescript
-// AI Recommendations trong components/features/AIRecommendations.tsx
-const handleGetRecommendations = async () => {
-  // Mock API call với delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // Logic gợi ý dựa trên:
-  // - Lịch sử xem (personalized)
-  // - Số lượng học viên (trending)  
-  // - Danh mục tương tự (similar)
-};
-
-// Chatbot Response trong components/features/Chatbot.tsx
-const generateAIResponse = (userInput: string) => {
-  // Phân tích keywords và trả về response phù hợp
-  // Kèm theo danh sách sản phẩm được gợi ý
-};
-```
 
 ## 📱 Responsive Design
 
@@ -184,25 +213,28 @@ npm run type-check   # Kiểm tra TypeScript
 - Xem danh sách khóa học
 - Tìm kiếm theo từ khóa
 - Lọc theo danh mục, giá, mức độ
-- Xem gợi ý AI
+- **Bấm "Gợi ý sản phẩm phù hợp"** để nhận gợi ý AI
 
-### 2. Chi tiết khóa học
+### 2. Gợi ý AI
+- Bấm nút "Gợi ý sản phẩm phù hợp" trong section AI
+- Hệ thống sẽ gọi API `/api/suggestions?userId=xxx`
+- Hiển thị sản phẩm gợi ý với lý do và độ tin cậy
+
+### 3. Chi tiết khóa học
 - Click "Xem chi tiết" để mở modal
 - Thông tin đầy đủ về khóa học
 - Thêm vào yêu thích
-- Chia sẻ khóa học
 
-### 3. Yêu thích
+### 4. Yêu thích
 - Quản lý danh sách khóa học yêu thích
 - Xem tổng giá trị và tiết kiệm
-- Thêm vào giỏ hàng
 
-### 4. Lịch sử
+### 5. Lịch sử
 - Xem các khóa học đã xem
 - Tìm kiếm trong lịch sử
 - Sắp xếp theo thời gian
 
-### 5. Chatbot AI
+### 6. Chatbot AI
 - Click icon chat để mở
 - Hỏi về khóa học quan tâm
 - Nhận gợi ý cá nhân hóa
@@ -233,7 +265,7 @@ npm run type-check   # Kiểm tra TypeScript
 1. Kiểm tra responsive trên các thiết bị
 2. Test tất cả tính năng tìm kiếm/lọc
 3. Verify localStorage hoạt động
-4. Test AI recommendations
+4. Test API suggestions với nút "Gợi ý sản phẩm phù hợp"
 5. Kiểm tra chatbot responses
 
 ### Browser Support
@@ -241,6 +273,18 @@ npm run type-check   # Kiểm tra TypeScript
 - Firefox 88+
 - Safari 14+
 - Edge 90+
+
+## 🚀 Demo
+
+**Live Demo**: [Vercel/Netlify URL]
+
+### Test Cases
+- Truy cập trang chủ
+- Bấm "Gợi ý sản phẩm phù hợp" để test API suggestions
+- Tìm kiếm và lọc sản phẩm
+- Thêm/xóa yêu thích
+- Xem chi tiết sản phẩm
+- Chat với AI bot
 
 ## 📄 License
 

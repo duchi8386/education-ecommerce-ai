@@ -58,4 +58,35 @@ export interface ChatMessage {
 export interface ViewHistoryItem {
   productId: string;
   viewedAt: Date;
+}
+
+// Thêm interface cho user behavior analytics
+export interface UserBehavior {
+  viewedProducts: string[];
+  likedProducts: string[];
+  searchHistory: string[];
+  categoryPreferences: { [category: string]: number };
+  levelPreferences: { [level: string]: number };
+  instructorPreferences: { [instructor: string]: number };
+  tagPreferences: { [tag: string]: number };
+  priceRange: { min: number; max: number };
+  lastActiveAt: Date;
+}
+
+export interface RecommendationContext {
+  userBehavior: UserBehavior;
+  currentUser: string;
+  contextualData?: {
+    timeOfDay?: string;
+    dayOfWeek?: string;
+    recentSearches?: string[];
+  };
+}
+
+export interface SmartRecommendation {
+  product: Product;
+  reason: string;
+  confidence: number;
+  score: number;
+  type: 'behavior_based' | 'similar_viewed' | 'category_preference' | 'collaborative';
 } 
