@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Clock, Search, Filter, Trash2, Eye } from "lucide-react";
+import { Clock, Search, Trash2, Eye } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import { mockProducts } from "@/data/mockData";
 import ProductCard from "@/components/ui/ProductCard";
